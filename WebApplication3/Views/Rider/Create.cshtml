@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Create Drivers";
+}
+
+
+<form method="post">
+    Driver Name: <input type="text" name="DriverName" /><br /><br />
+    Driver Rating: <input type="text" name="DriverRating" /><br /><br />
+    Driver Phone: <input type="text" name="DriverPhone" /><br /><br />
+    Completed Rides: <input type="text" name="CompletedRides" /><br/><br />
+    <input type="Submit"/>
+</form>
+
+@if (Model != null){
+    <div>Congrats! You have created driver @Model.DriverName (@Model.UberId) </div>
+}

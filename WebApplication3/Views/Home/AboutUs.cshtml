@@ -1,0 +1,22 @@
+﻿@model WebApplication3.Models.AboutUsViewModel
+@{
+    ViewData["Title"] = "About Us";
+}
+<h1>@ViewData["Title"]</h1>
+
+<h2>@Model.CompanyName</h2>
+
+@{ 
+    for (int i = 0; i < 10; i++)
+    {
+        <div>@i</div>
+    }
+}
+
+<form method="post">
+    Number 1: <input type="text" name="op1" /><br />
+    Number 2: <input type="text" name="op2" /><br />
+    <input type="Submit" value="Add Numbers!" />
+</form>
+
+The sum is @Model.Sum

@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<table class="table table-bordered table-responsive table-hover">
+
+    <tr>
+
+        <th>&nbsp&nbsp&nbsp&nbsp</th>
+        <th>
+
+            DriverName &nbsp
+
+        </th>
+        <th>
+
+            DriverRating &nbsp
+
+        </th>
+        <th>
+
+            DriverPhone &nbsp
+
+        </th>
+        <th>
+
+            CompletedRides &nbsp
+
+        </th>
+        <th>
+
+            CurrentDriver &nbsp
+
+        </th>
+        <th>
+
+            UberID &nbsp
+
+        </th>
+
+    </tr>
+
+@foreach (var v in Model) {
+    <tr>
+        <td>
+            <div>@v.Id</div>
+        </td>
+
+        <td>
+            <div>@v.DriverName</div>
+        </td>
+
+        <td>
+            <div>@v.DriverRating</div>
+        </td>
+
+        <td>
+            <div>@v.DriverPhone</div>
+        </td>
+
+        <td>
+            <div>@v.CompletedRides</div>
+        </td>
+
+        <td>
+            <div>@v.IsActive</div>
+        </td>
+
+        <td>
+            <div>@v.UberId</div>
+        </td>
+    </tr>
+}
+
+</table>
+

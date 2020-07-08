@@ -1,0 +1,227 @@
+﻿@{
+    ViewData["Title"] = "Riders";
+}
+
+Rider Name:
+<input type="text" id="RiderName" name="RiderName" />
+<br />
+<br />
+Rider Rating:
+<input type="text" id="RiderRating" name="RiderRating" />
+<br />
+<br />
+Rider Phone:
+<input type="text" id="RiderPhone" name="RiderPhone" />
+<br />
+<br />
+<input type="button" value="Add A Rider" onclick="addRider()" />
+
+<br />
+<br />
+
+<input type="button" value="Get Riders" onclick="getRiders()" /> &nbsp &nbsp &nbsp &nbsp
+<input type="button" value="Clear Table" onclick="clearTable()" />
+
+<br />
+<br />
+
+<table id="riders" class="table table-bordered table-responsive table-hover" width="100%">
+
+    <tr>
+
+        <th>&nbsp&nbsp&nbsp&nbsp</th>
+        <th>
+
+            Rider &nbsp
+
+        </th>
+        <th>
+
+            Rating &nbsp
+
+        </th>
+        <th>
+
+            Phone &nbsp
+
+        </th>
+        <th>
+
+            UberID &nbsp
+
+        </th>
+        <th>
+
+            IsActive &nbsp
+
+        </th>
+        <th>
+
+            Delete &nbsp
+
+        </th>
+        <th>
+
+            Edit &nbsp
+
+        </th>
+
+    </tr>
+
+</table>
+
+<br />
+<br />
+
+<div><p id="update"></p></div>
+
+<br />
+<br />
+
+<script>
+    function getRiders() {
+        $.ajax({
+            url: 'http://localhost:5278/api/riders/',
+            type: 'GET',
+            success: function (data, request) {
+                $("#riders tr>td").remove();
+
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].isActive != false) {
+                        $('#riders').append('<tr><td><div>' + data[i].id + '</div></td><td><div>' + data[i].riderName + '</div></td><td><div>' + data[i].riderRating + '</div></td><td><div>' + data[i].riderPhone + '</div></td><td><div>' + data[i].riderUberId + '</div></td><td><div>' + data[i].isActive + '</div></td><td><div><input type = "button" value = "Delete" onclick ="deleteRider(' + data[i].id + ')"</div></td><td><div><input type="button" value="Edit" onclick="editRider(' + data[i].id + ')"</div></td></tr>');
+
+                    }
+                    // getting drivers not via table
+                    //$('#drivers').append('<div>' + data[i].driverName + '&nbsp &nbsp &nbsp' + '<input type="button" value="Delete" onclick="deleteDriver(' + data[i].id + ')">' + '&nbsp &nbsp &nbsp' + '<input type="button" value="Edit" onclick="editDriver(' + data[i].id + ')"><br/><br/><div/>');
+                    else {
+                        // error handling
+                    }
+
+
+                }
+            },
+            error: function (request) {
+                //handle error
+            }
+        })
+    }
+
+    function deleteRider(id) {
+        $.ajax({
+            url: 'http://localhost:5278/api/riders/' + id,
+            type: 'DELETE',
+            success: function (data, request) {
+                alert("Rider Deleted");
+                getRiders();
+            },
+            error: function (request) {
+                //handle error
+            }
+        })
+    }
+
+    function editRider(id) {
+        $.ajax({
+            url: 'http://localhost:5278/api/riders/' + id,
+            type: 'GET',
+            success: function (data, request) {
+                for (var i = 0; i < data.length; i++) {
+
+                    if (id == null) {
+                        alert('Not a valid Rider');
+                        //window.location.replace('http://localhost:5278/Driver/Edit/' + id);
+                    }
+                    else {
+                        // window.location.replace('http://localhost:5278/Driver/Edit/' + id);
+                        $('#update').append('Rider Name: <input type="text" id="riderName" name="riderName" value="' + data[i].riderName + '" /><br /><br />Rider Rating: <input type="text"id="riderRating"name="riderRating"value="' + data[i].riderRating + '" /><br /><br />Rider Phone: <input type="text"id="riderPhone"name="riderPhone"value="' + data[i].riderPhone + '" /><br /><input type="button" value="Submit!" onclick="submitRider(' + id + ')" /><br /><br />');
+                    }
+                }
+
+            },
+            error: function (request) {
+                //handle error
+            }
+        })
+
+
+    }
+
+    function submitRider(id) {
+        var riderName = $('riderName').val();
+        riderName = $('input[name="riderName"]').val();
+
+        var riderRating = $('riderRating').val();
+        riderRating = $('input[name="riderRating"]').val();
+
+
+        var riderPhone = $('riderPhone').val();
+        riderPhone = $('input[name="riderPhone"]').val();
+
+        var editedRider = {
+            id: id,
+            riderName: riderName,
+            riderRating: riderRating,
+            riderPhone: riderPhone
+        };
+
+        $.ajax({
+            url: 'http://localhost:5278/api/riders/' + id,
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(editedRider),
+            success: function (data, request) {
+                alert("Rider updated")
+                getRiders();
+
+            },
+            error: function (request) {
+                //handle error
+            }
+        })
+    }
+
+
+
+
+    function addRider() {
+        var riderName = $('RiderName').val();
+        riderName = $('input[name="RiderName"]').val();
+
+        var riderRating = $('RiderRating').val();
+        riderRating = $('input[name="RiderRating"]').val();
+
+
+        var riderPhone = $('RiderPhone').val();
+        riderPhone = $('input[name="RiderPhone"]').val();
+
+        var Rider = {
+            riderName: riderName,
+            riderRating: riderRating,
+            riderPhone: riderPhone
+
+        };
+
+        $.ajax({
+            url: 'http://localhost:5278/api/riders/',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(Rider),
+            success: function (data, request) {
+                alert('Rider added')
+                getRiders();
+
+            },
+            error: function (request) {
+                //handle error
+            }
+        })
+    }
+
+    function clearTable() {
+        $("#riders tr>td").remove();
+    }
+
+
+</script>
+
+

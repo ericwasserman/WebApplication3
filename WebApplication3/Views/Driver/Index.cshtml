@@ -1,0 +1,255 @@
+﻿@{
+    ViewData["Title"] = "Drivers";
+}
+
+Driver Name:
+<input type="text" id="DriverName" name="DriverName" />
+<br />
+<br />
+Driver Rating:
+<input type="text" id="DriverRating" name="DriverRating" />
+<br />
+<br />
+Driver Phone:
+<input type="text" id="DriverPhone" name="DriverPhone" />
+<br />
+<br />
+Completed Rides:
+<input type="text" id="CompletedRides" name="CompletedRides" />
+<br />
+<br />
+<input type="button" value="Add A Driver" onclick="addDriver()" />
+
+<br />
+<br />
+<br />
+
+<TR>
+    <TD class="select">
+        Select Table
+    </TD>
+    <TD ALIGN="center">
+        <select>
+            <option value="Drivers">Drivers</option>
+            <option value="Riders">Riders</option>
+            <option value="Cars">Cars</option>
+        </select>
+    </TD>
+</TR>
+<br />
+<br />
+
+<input type="button" value="Get Drivers" onclick="getDrivers()" /> &nbsp &nbsp &nbsp &nbsp
+<input type="button" value="Clear Table" onclick="clearTable()" />
+
+<br />
+<br />
+
+@*<div id="drivers"></div>*@
+<table id="drivers" class="table table-bordered table-responsive table-hover" width="100%">
+
+    <tr>
+
+        <th>&nbsp&nbsp&nbsp&nbsp</th>
+        <th>
+
+            Driver &nbsp
+
+        </th>
+        <th>
+
+            Rating &nbsp
+
+        </th>
+        <th>
+
+            Phone &nbsp
+
+        </th>
+        <th>
+
+            Completed Rides &nbsp
+
+        </th>
+        <th>
+
+            Current Driver &nbsp
+
+        </th>
+        <th>
+
+            Uber ID &nbsp
+
+        </th>
+        <th>
+
+            Delete &nbsp
+
+        </th>
+        <th>
+
+            Edit &nbsp
+
+        </th>
+
+    </tr>
+
+</table>
+
+<br />
+<br />
+
+<div><p id="update"></p></div>
+
+<script>
+    function getDrivers() {
+        $.ajax({
+            url: 'http://localhost:5278/api/drivers/',
+            type: 'GET',
+            success: function (data, request) {
+                $("#drivers tr>td").remove();
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].isActive != false) {
+                        $('#drivers').append('<tr><td><div>' + data[i].id + '</div></td><td><div>' + data[i].driverName + '</div></td><td><div>' + data[i].driverRating + '</div></td><td><div>' + data[i].driverPhone + '</div></td><td><div>' + data[i].completedRides + '</div></td><td><div>' + data[i].isActive + '</div></td><td><div>' + data[i].uberId + '</div></td><td><div><input type = "button" value = "Delete" onclick ="deleteDriver(' + data[i].id + ')"</div></td><td><div><input type="button" value="Edit" onclick="editDriver(' + data[i].id + ')"</div></td></tr>');
+                    }
+                    // getting drivers not via table
+                    //$('#drivers').append('<div>' + data[i].driverName + '&nbsp &nbsp &nbsp' + '<input type="button" value="Delete" onclick="deleteDriver(' + data[i].id + ')">' + '&nbsp &nbsp &nbsp' + '<input type="button" value="Edit" onclick="editDriver(' + data[i].id + ')"><br/><br/><div/>');
+                    else {
+                        // error handling
+                    }
+
+
+                }
+            },
+            error: function (request) {
+                //handle error
+            }
+        })
+    }
+
+    function deleteDriver(id) {
+        $.ajax({
+            url: 'http://localhost:5278/api/drivers/' + id,
+            type: 'DELETE',
+            success: function (data, request) {
+                alert("Driver Deleted");
+                getDrivers();
+            },
+            error: function (request) {
+                //handle error
+            }
+        })
+    }
+
+    function editDriver(id) {
+        $.ajax({
+            url: 'http://localhost:5278/api/drivers/' + id,
+            type: 'GET',
+            success: function (data, request) {
+                for (var i = 0; i < data.length; i++) {
+
+                    if (data[i].isActive != false) {
+                        $('#update').append('Driver Name: <input type="text" id="driverName" name="driverName" value="' + data[i].driverName + '" /><br /><br />Driver Rating: <input type="text"id="driverRating"name="driverRating"value="' + data[i].driverRating + '" /><br /><br />Driver Phone: <input type="text"id="driverPhone"name="driverPhone"value="' + data[i].driverPhone + '" /><br /><br />Completed Rides: <input type="text"id="completedRides"name="completedRides" value="' + data[i].completedRides + '"/><br /><br /><input type="button" value="Submit!" onclick="submitDriver(' + id + ')" /><br /><br />');
+
+                    }
+                }
+
+            },
+            error: function (request) {
+                //handle error
+            }
+        })
+
+
+    }
+
+    function submitDriver(id) {
+        var driverName = $('driverName').val();
+        driverName = $('input[name="driverName"]').val();
+
+        var driverRating = $('driverRating').val();
+        driverRating = $('input[name="driverRating"]').val();
+
+
+        var driverPhone = $('driverPhone').val();
+        driverPhone = $('input[name="driverPhone"]').val();
+
+        var completedRides = $('completedRides').val();
+        completedRides = $('input[name="completedRides"]').val();
+
+
+        var editedDriver = {
+            id: id,
+            driverName: driverName,
+            driverRating: driverRating,
+            driverPhone: driverPhone,
+            completedRides: completedRides
+        };
+
+        $.ajax({
+            url: 'http://localhost:5278/api/drivers/' + id,
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(editedDriver),
+            success: function (data, request) {
+                alert("Driver updated")
+                getDrivers();
+
+            },
+            error: function (request) {
+                //handle error
+            }
+        })
+    }
+
+
+
+
+    function addDriver() {
+        var driverName = $('DriverName').val();
+        driverName = $('input[name="DriverName"]').val();
+
+        var driverRating = $('DriverRating').val();
+        driverRating = $('input[name="DriverRating"]').val();
+
+
+        var driverPhone = $('DriverPhone').val();
+        driverPhone = $('input[name="DriverPhone"]').val();
+
+        var completedRides = $('CompletedRides').val();
+        completedRides = $('input[name="CompletedRides"]').val();
+
+
+        var Driver = {
+            driverName: driverName,
+            driverRating: driverRating,
+            driverPhone: driverPhone,
+            completedRides: completedRides
+
+        };
+
+        $.ajax({
+            url: 'http://localhost:5278/api/drivers/',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(Driver),
+            success: function (data, request) {
+                // window.location.replace('http://localhost:5278/Driver/Create/');
+                alert('Driver added')
+                getDrivers();
+
+            },
+            error: function (request) {
+                //handle error
+            }
+        })
+    }
+
+    function clearTable() {
+        $("#drivers tr>td").remove();
+    }
+
+
+</script>
+
+

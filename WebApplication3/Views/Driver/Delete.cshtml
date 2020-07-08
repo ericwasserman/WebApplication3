@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Delete Driver";
+}
+
+    <form method="post">
+        <h3>Are you sure you want to delete @Model.DriverName?</h3>
+        Driver Name: <input type="text" name="DriverName" value="@Model.DriverName" /><br />
+        Driver Rating: <input type="text" name="DriverRating" value="@Model.DriverRating" /><br />
+        Driver Phone: <input type="text" name="DriverPhone" value="@Model.DriverPhone" /><br />
+        Completed Rides: <input type="text" name="CompletedRides" value="@Model.CompletedRides" /><br />
+        Driver Status: @Model.IsActive <br/>
+        <input type="submit" />
+    </form>
+
+@if (Model != null)
+{
+    <div>Congrats! You have deleted driver @Model.DriverName (@Model.UberId) </div>
+}
